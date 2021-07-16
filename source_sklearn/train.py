@@ -74,18 +74,18 @@ if __name__ == '__main__':
     
     # scale and create a validation set with 7% of the data for model selection
     # (1/0 label ratio is 60/40 so it's pretty balanced)
-    X_train, X_val, y_train, y_val = train_test_split(train_x, train_y, test_size=.1, random_state=random_state)
+    X_train, X_val, y_train, y_val = train_test_split(train_x, train_y, test_size=.07, random_state=random_state)
     
     
     # models from which we will choose the best one
     models = [KNeighborsClassifier(3),
-              SVC(kernel="linear", C=0.025),
-              SVC(gamma=2, C=1),
-              GaussianProcessClassifier(1.0 * RBF(1.0)),
-              DecisionTreeClassifier(max_depth=5),
-              RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
-              MLPClassifier(alpha=1, max_iter=1000),
-              AdaBoostClassifier(n_estimators=500),
+              SVC(kernel="linear", C=0.025, random_state=random_state),
+              SVC(gamma=2, C=1, random_state=random_state),
+              GaussianProcessClassifier(1.0 * RBF(1.0), random_state=random_state),
+              DecisionTreeClassifier(max_depth=5, random_state=random_state),
+              RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1, random_state=random_state),
+              MLPClassifier(alpha=1, max_iter=1000, random_state=random_state),
+              AdaBoostClassifier(n_estimators=500, random_state=random_state),
               GaussianNB(),
               QuadraticDiscriminantAnalysis()]
     
