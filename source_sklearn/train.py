@@ -10,6 +10,18 @@ import pandas as pd
 import joblib
 
 ## TODO: Import any additional libraries you need to define a model
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neural_network import MLPClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process.kernels import RBF
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+
 
 
 # Provided model load function
@@ -57,14 +69,40 @@ if __name__ == '__main__':
     
     ## --- Your code here --- ##
     
+    # random state for reproducibility
+    random_state=1
+    
+    # scale and create a validation set with 7% of the data for model selection
+    # (1/0 label ratio is 60/40 so it's pretty balanced)
+    X_train, X_val, y_train, y_val = train_test_split(train_x, train_y, test_size=.1, random_state=random_state)
+    
+    
+    # models from which we will choose the best one
+    models = [KNeighborsClassifier(3),
+              SVC(kernel="linear", C=0.025),
+              SVC(gamma=2, C=1),
+              GaussianProcessClassifier(1.0 * RBF(1.0)),
+              DecisionTreeClassifier(max_depth=5),
+              RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
+              MLPClassifier(alpha=1, max_iter=1000),
+              AdaBoostClassifier(n_estimators=500),
+              GaussianNB(),
+              QuadraticDiscriminantAnalysis()]
+    
+    # initialize the best score to 0 and the index of the best model to 0
+    best_score = 0
+    best_model_idx = 0
+    
+    # model selection process -> based on the best score on validation set
+    for i in range(len(models)):
+        models[i].fit(X_train, y_train)
+        score = models[i].score(X_val, y_val)
+        if score > best_score:
+            best_score = score
+            best_model_idx = i
 
-    ## TODO: Define a model 
-    model = None
-    
-    
-    ## TODO: Train the model
-    
-    
+    # assigning best model
+    model = models[best_model_idx]    
     
     ## --- End of your code  --- ##
     
